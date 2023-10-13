@@ -32,7 +32,7 @@ mockallan_client.assert_called('POST', '/orders')
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
   File "mockallan_client.py", line 19, in assert_called
-    raise AssertionError(f'{title}. {detail}')
+    raise AssertionError(detail)
 AssertionError: Expected POST /orders to be called 1 times. Called 0 times.
 
 ```
@@ -41,8 +41,10 @@ AssertionError: Expected POST /orders to be called 1 times. Called 0 times.
 
 ```python
 import pytest
+from mockallan_client import MockallanClient
 
-@pytest.fixture(scope='session)
+
+@pytest.fixture(scope='session')
 def mockallan_client() -> MockallanClient:
 
     return MockallanClient(base_url='http://localhost:8080')
@@ -52,7 +54,7 @@ def test_order_add_product(mockallan_client: MockallanClient):
 
     # ... Run software under test use case...
 
-    mockallan_client.assert_called('POST', '/orders/order_e2b9/products')
+    mockallan_client.assert_called_once('POST', '/orders/order_e2b9/products')
 ```
 
 ## Related Repositories
