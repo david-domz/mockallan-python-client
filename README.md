@@ -59,5 +59,5 @@ def test_order_add_product(mockallan_client: MockallanClient):
 
 ## Related Repositories
 
-See `mockallan` at https://github.com/david-domz/mockallan.
-See `mockallan-docker` at https://github.com/david-domz/mockallan-docker.
+- [mockallan](https://github.com/david-domz/mockallan) - lightweight HTTP server mock.
+- [mockallan-docker](https://github.com/david-domz/mockallan-docker) - Containerized lightweight HTTP server mock.
