@@ -4,6 +4,7 @@ Python client for [mockallan](https://github.com/david-domz/mockallan).
 
 ## Getting Started
 
+
 1. Create a `MockallanClient` instance.
 
 
@@ -14,7 +15,7 @@ mockallan_client = MockallanClient(base_url='http://localhost:8080')
 
 ```
 
-2. Run our software under test (SUT).
+2. Run our System Under Test (SUT).
    
 
 3. Invoke `assert_called()` to verify that a particular endpoint was called by our SUT.
@@ -37,7 +38,7 @@ AssertionError: Expected POST /orders to be called 1 times. Called 0 times.
 
 ```
 
-## Using `mockallan-python-client` In `pytest` Environment
+## Using `mockallan-python-client` In A `pytest` Environment
 
 ```python
 import pytest
@@ -57,7 +58,7 @@ def test_order_add_product(mockallan_client: MockallanClient):
     mockallan_client.assert_called_once('POST', '/orders/order_e2b9/products')
 ```
 
-## Related Repositories
+## Related Projects
 
 - [mockallan](https://github.com/david-domz/mockallan) - lightweight HTTP server mock.
 - [mockallan-docker](https://github.com/david-domz/mockallan-docker) - Containerized lightweight HTTP server mock.
