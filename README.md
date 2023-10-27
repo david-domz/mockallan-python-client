@@ -2,6 +2,8 @@
 
 Python client for [mockallan](https://github.com/david-domz/mockallan).
 
+Disclaimer: this is a work in progress project, stay tuned for updates.
+
 ## Getting Started
 
 
