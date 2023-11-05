@@ -22,6 +22,27 @@ class MockallanClient:
 		self._base_url = base_url
 		self._timeout = timeout
 
+
+	def config(self, stub_config: dict):
+		"""Set stub configuration.
+
+		Args:
+			stub_config (dict):	Stub configuration object.
+
+		Raises:
+			requests.InvalidJSONError
+			requests.ConnectionError
+
+		"""
+		url = f'{self._base_url}/config'
+
+		response = requests.put(url, json=stub_config, timeout=self._timeout)
+
+		if response.status_code == 400:
+			# TO DO: raise BadRequestResponse()
+			raise AssertionError()
+
+
 	def post(self, path: str, data = None, json=None, headers=None) -> requests.Response:
 		"""Simulates a POST request by our System Under Test (SUT). """
 
@@ -51,21 +72,43 @@ class MockallanClient:
 
 
 	def assert_called(self, method: str, path: str):
+		"""Assert that an endpoint was called.
 
+		Args:
+			method (str):
+			path (str):
+
+		Raises:
+			BadRequest
+			Conflict
+			ServerError
+
+		"""
 		url = f'{self._base_url}/assert-called?method={method}&path={path}'
 
 		response = requests.get(url, timeout=self._timeout)
 
-		self._assert_response(response)
+		self._handle_assert_called_response(response)
 
 
 	def assert_called_once(self, method: str, path: str):
+		"""Asserts that a particular endpoint was called once.
 
+		Args:
+			method (str):
+			path (str):
+
+		Raises:
+			BadRequest
+			Conflict
+			ServerError
+
+		"""
 		url = f'{self._base_url}/assert-called-once?method={method}&path={path}'
 
 		response = requests.get(url, timeout=self._timeout)
 
-		self._assert_response(response)
+		self._handle_assert_called_response(response)
 
 
 	def assert_called_with(
@@ -75,7 +118,16 @@ class MockallanClient:
 			body: Any,
 			content_type: str = '',
 			mockallan_validator = None):
+		"""Asserts that a particular endpoint was called with certain request body.
 
+		Args:
+			method (str):
+			path:
+			body (dict | str | bytes):
+			content_type (str):
+			mockallan_validator:
+
+		"""
 		url = f'{self._base_url}/assert-called-with?method={method}&path={path}'
 
 		MockallanClient._post_assert_with(url, body, content_type, mockallan_validator)
@@ -88,7 +140,16 @@ class MockallanClient:
 			body: Any,
 			content_type: str = '',
 			mockallan_validator = None):
+		"""Asserts that a particular endpoint was called with a request body.
 
+		Args:
+			method (str):
+			path:
+			body (dict | str | bytes):
+			content_type (str):
+			mockallan_validator:
+
+		"""
 		url = f'{self._base_url}/assert-called-once-with?method={method}&path={path}'
 
 		MockallanClient._post_assert_with(url, body, content_type, mockallan_validator)
@@ -100,14 +161,29 @@ class MockallanClient:
 
 
 	def call_args(self) -> Any:
-		"""This is either None (if the mock hasn’t been called), or the request body that the mock was last called with. """
+		"""Retrieves the request body that the mock was last called with. """
 
-		raise NotImplementedError
+		url = f'{self._base_url}/call-args'
+
+		response = requests.get(url)
+		if response.status_code == 409:
+			# TO DO: Raise exception: No request was performed by the software under test.
+			raise AssertionError()
 
 
 	def call_args_list(self) -> list[dict]:
+		"""Retrieves all the request and response bodies that the mock was called with. """
 
-		raise NotImplementedError
+		request_list = {}
+		url = f'{self._base_url}/call-args-list'
+
+		response = requests.get(url)
+		if response.status_code == 200:
+			request_list = response.json()
+
+		# TO DO
+
+		return request_list
 
 
 	@staticmethod
@@ -135,20 +211,20 @@ class MockallanClient:
 		else:
 			response = requests.post(url, body)
 
-		MockallanClient._assert_response(response)
+		MockallanClient._handle_assert_called_response(response)
 
 
 	@staticmethod
-	def _assert_response(response: requests.Response):
+	def _handle_assert_called_response(response: requests.Response):
+
+		if response.status_code == 400:
+			# TO DO: Raise BadRequest()
+			raise AssertionError()
 
 		if response.status_code == 409:
-			detail = response.json()['detail']
-			raise AssertionError(detail)
-
-		if int(response.status_code / 100) == 4:
-			title = response.json()['title']
-			detail = response.json()['detail']
-			raise AssertionError(f'{title}. {detail}')
+			# TO DO: Raise ConflictResponse()
+			raise AssertionError()
 
 		if int(response.status_code / 200) == 5:
+			# TO DO: ServerErrorResponse()
 			raise AssertionError(f'{response.status_code} {response.text}')
