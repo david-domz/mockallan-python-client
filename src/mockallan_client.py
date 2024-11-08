@@ -155,15 +155,15 @@ class MockallanClient:
 		MockallanClient._post_assert_with(url, body, content_type, mockallan_validator)
 
 
-	def call_count(self) -> int:
+	def request_count(self) -> int:
 
 		raise NotImplementedError
 
 
-	def call_args(self) -> Any:
+	def request_body(self) -> Any:
 		"""Retrieves the request body that the mock was last called with. """
 
-		url = f'{self._base_url}/call-args'
+		url = f'{self._base_url}/request-body'
 
 		response = requests.get(url)
 		if response.status_code == 409:
@@ -171,11 +171,11 @@ class MockallanClient:
 			raise AssertionError()
 
 
-	def call_args_list(self) -> list[dict]:
+	def request_body_list(self) -> list[dict]:
 		"""Retrieves all the request and response bodies that the mock was called with. """
 
 		request_list = {}
-		url = f'{self._base_url}/call-args-list'
+		url = f'{self._base_url}/request-body-list'
 
 		response = requests.get(url)
 		if response.status_code == 200:
